@@ -1,0 +1,10 @@
+#!/bin/sh
+# Installs the pre-commit hook by symlinking it into .git/hooks/.
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+HOOKS_DIR="$REPO_ROOT/.git/hooks"
+HOOK_SOURCE="$REPO_ROOT/hooks/pre-commit"
+
+chmod +x "$HOOK_SOURCE"
+ln -sf "$HOOK_SOURCE" "$HOOKS_DIR/pre-commit"
+echo "Pre-commit hook installed."
