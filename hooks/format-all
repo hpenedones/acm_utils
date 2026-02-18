@@ -1,0 +1,25 @@
+#!/bin/sh
+# Runs clang-format on every C and C++ file in the repository.
+# Usage: hooks/format-all
+
+if ! command -v clang-format > /dev/null 2>&1; then
+    echo "clang-format not found. Please install it to auto-format C/C++ files."
+    exit 1
+fi
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+tmpfile=$(mktemp)
+find "$REPO_ROOT" -name ".git" -prune -o \( -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) -print > "$tmpfile"
+
+failed=0
+while IFS= read -r file; do
+    if ! clang-format -i "$file"; then
+        echo "clang-format failed on $file"
+        failed=1
+    else
+        echo "Formatted: $file"
+    fi
+done < "$tmpfile"
+rm -f "$tmpfile"
+exit $failed

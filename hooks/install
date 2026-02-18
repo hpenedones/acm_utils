@@ -6,5 +6,6 @@ HOOKS_DIR="$REPO_ROOT/.git/hooks"
 HOOK_SOURCE="$REPO_ROOT/hooks/pre-commit"
 
 chmod +x "$HOOK_SOURCE"
+chmod +x "$REPO_ROOT/hooks/format-all"
 ln -sf "$HOOK_SOURCE" "$HOOKS_DIR/pre-commit"
 echo "Pre-commit hook installed."
