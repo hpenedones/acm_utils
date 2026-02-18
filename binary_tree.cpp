@@ -60,59 +60,7 @@ class BinaryTreeNode{
 		// Must be called on the root node so the full tree is searched.
 		void remove(int n)
 		{
-			BinaryTreeNode * parent = NULL;
-			BinaryTreeNode * node = this;
-			bool isLeft = false;
-
-			while (node && node->data != n) {
-				parent = node;
-				if (n < node->data) {
-					node = node->left;
-					isLeft = true;
-				} else {
-					node = node->right;
-					isLeft = false;
-				}
-			}
-
-			if (!node) return;
-
-			if (!node->left && !node->right) {
-				if (parent) {
-					if (isLeft) parent->left = NULL;
-					else parent->right = NULL;
-				}
-				delete node;
-			}
-			else if (!node->left) {
-				if (parent) {
-					if (isLeft) parent->left = node->right;
-					else parent->right = node->right;
-				}
-				delete node;
-			}
-			else if (!node->right) {
-				if (parent) {
-					if (isLeft) parent->left = node->left;
-					else parent->right = node->left;
-				}
-				delete node;
-			}
-			else {
-				// two children: replace with in-order successor
-				BinaryTreeNode * successorParent = node;
-				BinaryTreeNode * successor = node->right;
-				while (successor->left) {
-					successorParent = successor;
-					successor = successor->left;
-				}
-				node->data = successor->data;
-				if (successorParent == node)
-					successorParent->right = successor->right;
-				else
-					successorParent->left = successor->right;
-				delete successor;
-			}
+			removeNode(n);
 		}
 
                 BinaryTreeNode * min()
@@ -135,6 +83,24 @@ class BinaryTreeNode{
 		}
                                                                                     
                 private:
+
+		BinaryTreeNode* removeNode(int n)
+		{
+			if (n < data) {
+				if (left) left = left->removeNode(n);
+			} else if (n > data) {
+				if (right) right = right->removeNode(n);
+			} else {
+				if (!left && !right) { delete this; return NULL; }
+				if (!left) { BinaryTreeNode* r = right; delete this; return r; }
+				if (!right) { BinaryTreeNode* l = left; delete this; return l; }
+				// two children: replace with in-order successor
+				BinaryTreeNode* s = right->min();
+				data = s->data;
+				right = right->removeNode(s->data);
+			}
+			return this;
+		}
 
 		BinaryTreeNode *left, *right;
 		int data;
