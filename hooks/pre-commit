@@ -1,0 +1,23 @@
+#!/bin/sh
+# Pre-commit hook that formats staged C and C++ files using clang-format.
+# Install by running: hooks/install
+
+if ! command -v clang-format > /dev/null 2>&1; then
+    echo "clang-format not found. Please install it to auto-format C/C++ files."
+    exit 0
+fi
+
+# Get list of staged C/C++ files
+staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(c|cpp|h|hpp)$')
+
+if [ -z "$staged_files" ]; then
+    exit 0
+fi
+
+echo "$staged_files" | while IFS= read -r file; do
+    if ! clang-format -i "$file"; then
+        echo "clang-format failed on $file"
+        exit 1
+    fi
+    git add "$file"
+done
