@@ -1,11 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 const char special[] = "\"\\";
 
 int main (int argc, char **argv)
 {
                 char cmdline[1000], outfile[1000];
-                char read_line[1000], *p, write_line[1000], *pw;
+                /* write_line needs 3× the space of read_line: each character may be
+                 * escaped (adding a backslash), plus the surrounding quotes, \n marker,
+                 * newline, and null terminator. */
+                char read_line[1000], *p, write_line[3000], *pw;
                 FILE *i, *o;
 
                 if (argc != 2) {
@@ -51,5 +56,6 @@ int main (int argc, char **argv)
                 fclose (i);
                 unlink ("tmp.s");
                 fclose (o);
+                return 0;
 }
 

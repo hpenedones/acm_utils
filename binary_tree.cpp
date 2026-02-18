@@ -57,36 +57,61 @@ class BinaryTreeNode{
                  	return (search(n) != NULL);
 		}
 
+		// Must be called on the root node so the full tree is searched.
 		void remove(int n)
 		{
-			BinaryTreeNode * node = search(n);
+			BinaryTreeNode * parent = NULL;
+			BinaryTreeNode * node = this;
+			bool isLeft = false;
 
-			if(node)
-			{
-				if(!node->left && !node->right)
-				{
-					delete node;
-					return;
-				}
-				if(!node->left)
-				{
-					node = node->right;
-					delete node->right;
-					return;
-				}
-				if(!node->right)
-				{
+			while (node && node->data != n) {
+				parent = node;
+				if (n < node->data) {
 					node = node->left;
-					delete node->left;
-					return;
-			      	}
-                                // node with two child
-                                // incomplete!!! need to put NULL pointers in parents
-				BinaryTreeNode * next = node->right->min();
-				node = next;
-				delete next;
+					isLeft = true;
+				} else {
+					node = node->right;
+					isLeft = false;
+				}
+			}
 
+			if (!node) return;
 
+			if (!node->left && !node->right) {
+				if (parent) {
+					if (isLeft) parent->left = NULL;
+					else parent->right = NULL;
+				}
+				delete node;
+			}
+			else if (!node->left) {
+				if (parent) {
+					if (isLeft) parent->left = node->right;
+					else parent->right = node->right;
+				}
+				delete node;
+			}
+			else if (!node->right) {
+				if (parent) {
+					if (isLeft) parent->left = node->left;
+					else parent->right = node->left;
+				}
+				delete node;
+			}
+			else {
+				// two children: replace with in-order successor
+				BinaryTreeNode * successorParent = node;
+				BinaryTreeNode * successor = node->right;
+				while (successor->left) {
+					successorParent = successor;
+					successor = successor->left;
+				}
+				node->data = successor->data;
+				if (successorParent == node)
+					successorParent->right = successor->right;
+				else
+					successorParent->left = successor->right;
+				delete successor;
 			}
 		}
 
