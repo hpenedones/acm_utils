@@ -18,7 +18,7 @@ public:
   
   Shape(string type_) : type(type_) {} ;
 
-  virtual Shape* createObject(string args) = 0;
+  virtual ~Shape() {}
 
 };
 
@@ -35,8 +35,8 @@ public:
   
   Triangle() : Shape("Triangle") {};
 
-  Triangle* createObject(string args) {
-    if (strcmp(args.c_str(), type.c_str()) != 0)
+  static Shape* createObject(string args) {
+    if (args != "Triangle")
       return NULL;
     return new Triangle();
   }
@@ -53,8 +53,8 @@ public:
   
   Circle() : Shape("Circle") {};
 
-  Circle* createObject(string args) {
-    if (strcmp(args.c_str(), type.c_str()) != 0)
+  static Shape* createObject(string args) {
+    if (args != "Circle")
       return NULL;
     return new Circle();
   }
@@ -99,15 +99,17 @@ int main(int argc, char ** argv)
   // shape_vec.push_back(new Triangle());
   // shape_vec.push_back(new Circle());
   
-  ShapeFactory::registerType( (ShapeCreator_Ptr) Triangle::createObject);
-  ShapeFactory::registerType( (ShapeCreator_Ptr) Circle::createObject);
+  ShapeFactory::registerType(Triangle::createObject);
+  ShapeFactory::registerType(Circle::createObject);
  
 
   Shape * shape1 = ShapeFactory::createObject("Triangle");
   Shape * shape2 = ShapeFactory::createObject("Circle");
 
-  //cout << shape1.type << " " << shape2.type << endl;
+  //cout << shape1->type << " " << shape2->type << endl;
 
+  delete shape1;
+  delete shape2;
   
   return 0;
 }

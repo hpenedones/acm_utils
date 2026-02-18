@@ -57,37 +57,10 @@ class BinaryTreeNode{
                  	return (search(n) != NULL);
 		}
 
+		// Must be called on the root node so the full tree is searched.
 		void remove(int n)
 		{
-			BinaryTreeNode * node = search(n);
-
-			if(node)
-			{
-				if(!node->left && !node->right)
-				{
-					delete node;
-					return;
-				}
-				if(!node->left)
-				{
-					node = node->right;
-					delete node->right;
-					return;
-				}
-				if(!node->right)
-				{
-					node = node->left;
-					delete node->left;
-					return;
-			      	}
-                                // node with two child
-                                // incomplete!!! need to put NULL pointers in parents
-				BinaryTreeNode * next = node->right->min();
-				node = next;
-				delete next;
-
-
-			}
+			removeNode(n);
 		}
 
                 BinaryTreeNode * min()
@@ -110,6 +83,24 @@ class BinaryTreeNode{
 		}
                                                                                     
                 private:
+
+		BinaryTreeNode* removeNode(int n)
+		{
+			if (n < data) {
+				if (left) left = left->removeNode(n);
+			} else if (n > data) {
+				if (right) right = right->removeNode(n);
+			} else {
+				if (!left && !right) { delete this; return NULL; }
+				if (!left) { BinaryTreeNode* r = right; delete this; return r; }
+				if (!right) { BinaryTreeNode* l = left; delete this; return l; }
+				// two children: replace with in-order successor
+				BinaryTreeNode* s = right->min();
+				data = s->data;
+				right = right->removeNode(s->data);
+			}
+			return this;
+		}
 
 		BinaryTreeNode *left, *right;
 		int data;

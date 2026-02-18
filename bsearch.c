@@ -25,13 +25,18 @@ int binsearch(int * v, int n, int val)
 
 
 int cmp(const void * a, const void * b) {
-     return (*(int*)a) > (*(int*)b);
+     return (*(int*)a) - (*(int*)b);
 }
 
 
 int main(int argc, char * argv[]) {
         
   /*      srand(time(NULL)); */ 
+
+        if (argc < 2) {
+            printf("Usage: %s <value>\n", argv[0]);
+            return 1;
+        }
 
         int size = 20;
         int v[size];

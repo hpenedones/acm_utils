@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+
 typedef struct _trie{
 	struct _trie * next[26];
 	int count;

@@ -73,6 +73,7 @@ BigInt& BigInt::operator= (const BigInt& other)
 {
     sign = other.sign;
     digits = other.digits;
+    return *this;
 }
 
 void BigInt::print(ostream& os) const 
